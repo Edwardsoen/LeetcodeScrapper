@@ -1,0 +1,5 @@
+LeetcodeScrapper/*
+__pycache__/
+PageHandler/__pycache__/
+*.pyc
+Leetcode Scrapper Output/*
