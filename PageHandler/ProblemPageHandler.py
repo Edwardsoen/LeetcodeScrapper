@@ -105,8 +105,14 @@ class ProblemPageHandler():
         self.data["relatedTopics"] = self.get_related_topics()
         self.data["similarQuestions"] = self.get_similar_questions()
         self.data["problem"] = self.get_problem_innerHTML()
-        self.data["tags"] = self.get_companies_tags()    
+        self.data["tags"] = self.get_companies_tags()   
+        self.data["editorial"] = self. get_editorial()
         
+    def get_editorial(self): 
+        self.driver.get(self.driver.current_url + "editorial")
+        time.sleep(2)
+        return self.driver.find_element(By.CLASS_NAME, "break-words").get_attribute('innerHTML')
+
 
 
     def get_tag_data(self, dialog): 

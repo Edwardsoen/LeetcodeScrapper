@@ -5,6 +5,7 @@ from PageHandler.CompanyProblemPageHandler import CompanyProblemPageHandler
 from PageHandler.MainTableHandler import MainTableHandler
 from PageHandler.LoginPageHandler import LoginPageHandler
 from PageHandler.ProblemPageHandler import ProblemPageHandler
+from PageHandler.StudyPlanPageHandler import StudyPlanPageHandler
 import sys
 from selenium.webdriver.chrome.options import Options
 from urllib.parse import urlparse 
@@ -31,6 +32,7 @@ def run_scrapper(stack, username = "" , password = "", require_login = False):
     navigator.add_url_handlers("https://leetcode.com/accounts/login/", LoginPageHandler(driver, username , password))
     navigator.add_url_handlers("https://leetcode.com/subscribe/", LoginPageHandler(driver, username , password))
     navigator.add_url_handlers("https://leetcode.com/problems/",ProblemPageHandler(driver))
+    navigator.add_url_handlers("https://leetcode.com/studyplan/",StudyPlanPageHandler(driver))
     navigator.run()     
 
 if __name__ == "__main__": 
