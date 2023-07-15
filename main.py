@@ -33,6 +33,7 @@ def run_scrapper(stack, username = "" , password = "", require_login = False):
     navigator.add_url_handlers("https://leetcode.com/subscribe/", LoginPageHandler(driver, username , password))
     navigator.add_url_handlers("https://leetcode.com/problems/",ProblemPageHandler(driver))
     navigator.add_url_handlers("https://leetcode.com/studyplan/",StudyPlanPageHandler(driver))
+    input()
     navigator.run()     
 
 if __name__ == "__main__": 

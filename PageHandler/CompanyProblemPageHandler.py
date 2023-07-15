@@ -12,6 +12,10 @@ class CompanyProblemPageHandler():
         self.problem_lists = []
         self.data = {}
         
+    def clear_data(self): 
+        self.problem_lists = []
+        self.data = {}
+
     def log_data(self):
         url_data = urlparse(self.driver.current_url)
         folder_name = url_data.path.split("/")[1]
@@ -20,16 +24,19 @@ class CompanyProblemPageHandler():
         log_data(self.data, folder_name=folder_name, file_name= file_name)
 
     def process_page(self): 
+        self.clear_data()
         WebDriverWait(self.driver, timeout=100).until(lambda d: d.find_element(By.ID,"react-select-2--value-item"))
         options_id = ['0', '1', '2', '3']
         for option_id in options_id: 
             option_element_name =  "react-select-2--option-" + option_id
-            duration = self.click_drop_down()
-            time.sleep(0.5)
+            self.click_drop_down()
+            time.sleep(1)
             if(self.is_option_exist(option_element_name)): 
                 self.driver.find_element(By.ID, option_element_name).click()
-                data = self.get_table_data(duration=duration)
+                time.sleep(1)
+                data = self.get_table_data(duration=self.get_duration())
                 self.problem_lists.append(data)
+                breakpoint()
         self.data["data"] = self.problem_lists
                             
     def click_drop_down(self): 
@@ -38,8 +45,11 @@ class CompanyProblemPageHandler():
         time.sleep(0.5) 
         return time_drop_down.text
 
+    def get_duration(self): 
+        return self.driver.find_element(By.ID, "react-select-2--value-item").text
+
     def is_option_exist(self, element_id): 
-        if len(self.driver.find_elements(By.ID, element_id)) ==0: 
+        if len(self.driver.find_elements(By.ID, element_id)) == 0: 
             self.click_drop_down()
             return False
         return True

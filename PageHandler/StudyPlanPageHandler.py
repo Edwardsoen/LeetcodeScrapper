@@ -23,8 +23,6 @@ class StudyPlanPageHandler():
 
     def process_page(self): 
         self.check_page()
-        if self.username == "" or self.username == None: 
-            raise NoCredentialsError(self.driver.current_url)
         self.data = self.get_study_plan_data()
 
     def check_page(self): 

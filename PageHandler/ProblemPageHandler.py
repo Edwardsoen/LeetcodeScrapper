@@ -21,13 +21,6 @@ class ProblemPageHandler():
     def get_problem_innerHTML(self): 
         return self.driver.find_element(By.CLASS_NAME, "_1l1MA").get_attribute('innerHTML')
 
-    def get_tags_bar(self):
-        left_section = self.driver.find_elements(By.CLASS_NAME,"ssg__qd-splitter-primary-h")[0]
-        flex_wrap = left_section.find_elements(By.CLASS_NAME, "flex-wrap")
-        if(len(flex_wrap) <= 1): 
-            return None 
-        return flex_wrap[0] 
-
     def check_page(self): 
         try: 
             WebDriverWait(self.driver, timeout=10).until(lambda d: d.find_element(By.ID,"qd-content"))
@@ -83,36 +76,40 @@ class ProblemPageHandler():
 
     def get_companies_tags(self): 
         try: 
-            tags_bar = self.get_tags_bar()
-            if tags_bar == None:
-                return 
-            tags_bar.find_elements(By.CLASS_NAME, "cursor-pointer")[-1].click()
-            WebDriverWait(self.driver, timeout=5).until(lambda d: d.find_element(By.CSS_SELECTOR,"div[role='dialog']"))
+            row = self.driver.find_elements(By.CLASS_NAME, "flex-wrap")[0]
+            row.find_elements(By.CLASS_NAME, "transition-colors")[-1].click()
+            # time.sleep(1)
+            WebDriverWait(self.driver, timeout=15).until(lambda d: d.find_element(By.CSS_SELECTOR,"div[role='dialog']"))
             dialog = self.driver.find_element(By.CSS_SELECTOR,"div[role='dialog']")
             tag_data = self.get_tag_data(dialog=dialog)
             return tag_data
         except Exception as e: 
+            self.data["isError"] = True
+            print(self.driver.current_url)
             return []
         
 
     def process_page(self):
+        self.data = {"tags":[], "problem": ""}
         self.check_page()
-        self.remove_on_focus_listener()
+        # self.remove_on_focus_listener()
         time.sleep(2)
         if self.require_subscription(): 
             raise NoCredentialsError(self.driver.current_url)
-        self.open_all_lower_tab()
-        self.data["relatedTopics"] = self.get_related_topics()
-        self.data["similarQuestions"] = self.get_similar_questions()
+        # self.open_all_lower_tab()
+        self.data["relatedTopics"] = []
+        self.data["similarQuestions"] = []
         self.data["problem"] = self.get_problem_innerHTML()
         self.data["tags"] = self.get_companies_tags()   
         self.data["editorial"] = self. get_editorial()
         
     def get_editorial(self): 
-        self.driver.get(self.driver.current_url + "editorial")
-        time.sleep(2)
-        return self.driver.find_element(By.CLASS_NAME, "break-words").get_attribute('innerHTML')
-
+        try:
+            self.driver.get(self.driver.current_url + "editorial")
+            time.sleep(2)
+            return self.driver.find_element(By.CLASS_NAME, "break-words").get_attribute('innerHTML')
+        except: 
+            return ""
 
 
     def get_tag_data(self, dialog): 
@@ -136,4 +133,3 @@ class ProblemPageHandler():
         file_name = url_data.path.split("/")[2]
         self.data["problemName"] = file_name
         log_data(self.data, folder_name=folder_name, file_name=file_name)
-
